@@ -32,12 +32,11 @@ const registerUser = async (req, res) => {
     //if no user found then create new one.
 
     const hashedPass = await bcrypt.hash(password, 10);
-    const newUser = await User.create({
+    await User.create({
       email,
       password: hashedPass,
     });
 
-    console.log(newUser);
     return res.status(201).json({
       status: "success",
       message: "User Registered successfully.Please login to continue.",
@@ -125,8 +124,81 @@ const getAllUsers = async (req, res) => {
   }
 };
 
+const getUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await User.findOne({
+      attributes: { exclude: ["password"] },
+      where: { id },
+    });
+
+    if (!user)
+      return res.status(400).json({
+        satus: "failed",
+        message: "User not found",
+      });
+
+    return res.status(200).json({
+      satus: "success",
+      data: user,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      satus: "failed",
+      message: "Something wrong happened!",
+      error,
+    });
+  }
+};
+
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    await User.destroy({ where: { id } });
+    return res.status(204).json({});
+  } catch (error) {
+    return res.status(400).json({
+      satus: "failed",
+      message: "Could not deleted.",
+      error,
+    });
+  }
+};
+
+const updateUser = async (req, res) => {
+  const { id } = req.params;
+  const { email } = req.body;
+  try {
+    //if name already exits
+    if (email) {
+      const isExist = await User.findOne({ where: { email } });
+      if (isExist) {
+        return res.status(400).json({
+          status: "failed",
+          message: "This email is already taken.Try another one.",
+        });
+      }
+    }
+    await User.update(req.body, { where: { id } });
+    return res.status(200).json({
+      satus: "success",
+      message: "User updated!",
+    });
+  } catch (error) {
+    return res.status(400).json({
+      status: "failed",
+      message: "Could not updated user.",
+    });
+  }
+};
+
 module.exports = {
   registerUser,
   login,
   getAllUsers,
+  getUser,
+  deleteUser,
+  updateUser,
 };

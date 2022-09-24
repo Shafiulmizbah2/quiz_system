@@ -1,5 +1,16 @@
 # A quiz Sytem that matters
 
+### Add a .env file in server directory & add this variable
+
+DB_PORT =
+PORT =
+DB =
+DB_HOST =
+DB_USER =
+DB_PASSWORD =
+
+ACCESS_SECRET =
+
 ### To start the server go to server folder and open terminal from there and type
 
 ###### yarn

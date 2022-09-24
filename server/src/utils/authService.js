@@ -11,14 +11,12 @@ const authenticateToken = (req, res, next) => {
   const token = authHeader && authHeader.split(" ")[1];
 
   if (!token) {
-    return res.status(401).json({ message: "You are not authorized!", error });
+    return res.status(401).json({ message: "You are not authorized!" });
   }
 
   jwt.verify(token, SECRET, (err, user) => {
     if (err)
-      return res
-        .status(403)
-        .json({ message: "You don't have permission!", error });
+      return res.status(403).json({ message: "You don't have permission!" });
     req.user = user;
     next();
   });
@@ -30,9 +28,7 @@ const isPermited = async (req, res, next) => {
     if (role === "admin") {
       next();
     } else {
-      return res
-        .status(403)
-        .json({ message: "You don't have permission!", error });
+      return res.status(403).json({ message: "You don't have permission!" });
     }
   } catch (error) {
     return res

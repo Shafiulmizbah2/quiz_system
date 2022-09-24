@@ -7,10 +7,9 @@ const db = require("./db");
 const port = process.env.PORT || 8000;
 
 //connect database
-db.connect((err) => {
-  if (!err) console.log("Database connected!");
-  else console.log("Error happened " + JSON.stringify(err, null, 2));
-});
+db.authenticate()
+  .then(() => console.log("Database connected!"))
+  .catch((err) => console.log(`Con not connect to Database.${err}`));
 
 //create server and listen
 const server = http.createServer(app);

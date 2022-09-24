@@ -1,13 +1,18 @@
-const mysql = require("mysql");
+const Sequelize = require("sequelize");
 
-const connectionObj = {
-  host: process.env.DB_HOST,
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB,
-  multipleStatements: true,
-};
+const host = process.env.DB_HOST;
+const user = process.env.DB_USER;
+const password = process.env.DB_PASSWORD;
+const dbName = process.env.DB;
+const dbPort = process.env.DB_PORT;
 
-const connection = mysql.createConnection(connectionObj);
+const db = new Sequelize(dbName, user, password, {
+  host,
+  port: dbPort,
+  dialect: "mysql",
+  define: {
+    freezeTableName: true,
+  },
+});
 
-module.exports = connection;
+module.exports = db;
